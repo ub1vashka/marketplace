@@ -72,9 +72,9 @@ func (s *Server) configRouting() *gin.Engine {
 	}
 	purchases := router.Group("/purchases")
 	{
-		purchases.GET("/:id", s.MakePurchaseHandler)
-		purchases.GET("/history", s.GetUserPurchasesHandler)
-		purchases.GET("/product/:id", s.GetProductPurchasesHandler)
+		purchases.POST("/:id", s.makePurchaseHandler)
+		purchases.GET("/history", s.getUserPurchasesHandler)
+		purchases.GET("/product/:id", s.getProductPurchasesHandler)
 	}
 
 	return router

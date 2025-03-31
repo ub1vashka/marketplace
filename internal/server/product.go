@@ -54,7 +54,7 @@ func (s *Server) addProductHandler(ctx *gin.Context) {
 	productID, err := s.productService.SaveProduct(product)
 	if err != nil {
 		log.Error().Err(err).Msg("save product failed")
-		if errors.Is(err, storageerror.ErrProductAlredyExist) {
+		if errors.Is(err, storageerror.ErrProductAlreadyExist) {
 			ctx.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 			return
 		}
