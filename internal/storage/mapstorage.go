@@ -87,7 +87,7 @@ func (ms *MapStorage) SaveProduct(product models.Product) (string, error) {
 	log := logger.Get()
 	for _, p := range ms.productStor {
 		if product.Name == p.Name && product.Description == p.Description {
-			return ``, storageerror.ErrProductAlredyExist
+			return ``, storageerror.ErrProductAlreadyExist
 		}
 	}
 	productID := uuid.New()
@@ -132,4 +132,49 @@ func (ms *MapStorage) UpdateProduct(productID string, product models.Product) er
 	}
 	ms.productStor[productID] = product
 	return nil
+}
+
+func (ms *MapStorage) MakePurchase(purchase models.Purchase) (string, error) {
+	log := logger.Get()
+	_, userExists := ms.stor[purchase.UID.String()]
+	if !userExists {
+		return "", storageerror.ErrUserNotFound
+	}
+	_, productExists := ms.productStor[purchase.ProductID.String()]
+	if !productExists {
+		return "", storageerror.ErrProductIDNotFound
+	}
+
+	purchaseID := uuid.New()
+	purchase.PurchaseID = purchaseID
+	ms.purchaseStor[purchaseID.String()] = purchase
+
+	log.Debug().Any("purchase storage", ms.purchaseStor).Msg("check storage")
+	return purchaseID.String(), nil
+}
+
+func (ms *MapStorage) GetUserPurchases(userID string) ([]models.Purchase, error) {
+	var purchases []models.Purchase
+	for _, purchase := range ms.purchaseStor {
+		if purchase.UID.String() == userID {
+			purchases = append(purchases, purchase)
+		}
+	}
+	if len(purchases) == 0 {
+		return nil, storageerror.ErrNoPurchasesFound
+	}
+	return purchases, nil
+}
+
+func (ms *MapStorage) GetProductPurchases(productID string) ([]models.Purchase, error) {
+	var purchases []models.Purchase
+	for _, purchase := range ms.purchaseStor {
+		if purchase.ProductID.String() == productID {
+			purchases = append(purchases, purchase)
+		}
+	}
+	if len(purchases) == 0 {
+		return nil, storageerror.ErrNoPurchasesFound
+	}
+	return purchases, nil
 }

@@ -15,8 +15,8 @@ func main() {
 	stor := storage.New()
 	userService := service.NewUserService(stor)
 	productService := service.NewProductService(stor)
-	pusrchaseService := service.NewPurchaseService(stor)
-	serve := server.New(cfg, userService, productService, pusrchaseService)
+	purchaseService := service.NewPurchaseService(stor)
+	serve := server.New(cfg, userService, productService, purchaseService)
 	if err := serve.Run(); err != nil {
 		log.Fatal().Err(err).Send()
 	}

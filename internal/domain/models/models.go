@@ -29,8 +29,8 @@ type Product struct {
 
 type Purchase struct {
 	PurchaseID uuid.UUID `json:"uuid"`
-	UID        uuid.UUID `json:"uuid"`
-	ProductID  uuid.UUID `json:"uuid"`
+	UID        uuid.UUID `json:"user-uuid"`
+	ProductID  uuid.UUID `json:"product-uuid"`
 	Quantity   int       `json:"quantity,omitempty" validate:"required"`
 	Timestamp  string    `json:"timestamp,omitempty" validate:"required"`
 }
